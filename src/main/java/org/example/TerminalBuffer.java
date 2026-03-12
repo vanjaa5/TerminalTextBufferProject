@@ -87,7 +87,7 @@ public class TerminalBuffer {
         return screen.get(row);
     }
 
-    public Line getScrollbackLine(int row){
+    public Line getScrollbackLine(int row) {
         return scrollback.get(row);
     }
 
@@ -96,7 +96,7 @@ public class TerminalBuffer {
     }
 
     public void writeText(String text) {
-        for(char c : text.toCharArray()) {
+        for (char c : text.toCharArray()) {
             Line line = screen.get(cursorRow);
             Cell cell = line.getCell(cursorColumn++);
 
@@ -105,10 +105,10 @@ public class TerminalBuffer {
             cell.setBackgroundColor(backgroundColor);
             cell.setStyles(styles);
 
-            if(cursorColumn >= width) {
+            if (cursorColumn >= width) {
                 cursorColumn = 0;
                 cursorRow++;
-                if(cursorRow >=height) {
+                if (cursorRow >= height) {
                     scrollUp();
                 }
             }
@@ -116,9 +116,9 @@ public class TerminalBuffer {
         }
     }
 
-    public void scrollUp(){
+    public void scrollUp() {
         Line top = screen.remove(0);
-        if(scrollback.size() >= scrollbackSize) {
+        if (scrollback.size() >= scrollbackSize) {
             scrollback.remove(0);
         }
         scrollback.add(top);
@@ -127,13 +127,13 @@ public class TerminalBuffer {
     }
 
 
-    public void insertText(String text){
+    public void insertText(String text) {
         Line line = screen.get(cursorRow);
         int n = text.length();
         int k = cursorColumn;
-        for(int j = 0; j < n; j++) {
-            for(int i = width - 1; i > k; i--){
-                line.getCell(i).copyFrom(line.getCell(i-1));
+        for (int j = 0; j < n; j++) {
+            for (int i = width - 1; i > k; i--) {
+                line.getCell(i).copyFrom(line.getCell(i - 1));
             }
             Cell cell = line.getCell(k++);
             cell.setCharacter(text.charAt(j));
@@ -142,19 +142,43 @@ public class TerminalBuffer {
             cell.setStyles(styles);
         }
 
-        cursorColumn  = k;
+        cursorColumn = k;
 
     }
 
 
-    public void fillLine(int row, char c){
+    public void fillLine(int row, char c) {
         Line line = screen.get(row);
-        for(int i = 0; i < width; i++){
+        for (int i = 0; i < width; i++) {
             Cell cell = line.getCell(i);
             cell.setCharacter(c);
             cell.setForegroundColor(foregroundColor);
             cell.setBackgroundColor(backgroundColor);
             cell.setStyles(styles);
         }
+    }
+
+    public void insertEmptyLine() {
+        Line line = screen.remove(0);
+        if (scrollback.size() >= scrollbackSize) {
+            scrollback.remove(0);
+        }
+        screen.add(new Line(width));
+        cursorRow -= 1;
+    }
+
+    public void clearScreen() {
+        for (Line line : screen) {
+            line.clear();
+        }
+
+        cursorRow = 0;
+        cursorColumn = 0;
+    }
+
+    public void clearScreenAndScrollback() {
+        clearScreen();
+        scrollback.clear();
+
     }
 }
