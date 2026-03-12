@@ -16,7 +16,7 @@ public class Line {
         return cells[col];
     }
 
-    public String getLineVlue(){
+    public String getLineValue(){
         StringBuilder line = new StringBuilder();
         for (Cell cell : cells) {
             line.append(cell.getCharacter());

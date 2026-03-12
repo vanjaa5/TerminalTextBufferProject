@@ -95,6 +95,8 @@ public class TerminalBuffer {
         return scrollback.size();
     }
 
+    //editing
+
     public void writeText(String text) {
         for (char c : text.toCharArray()) {
             Line line = screen.get(cursorRow);
@@ -109,22 +111,14 @@ public class TerminalBuffer {
                 cursorColumn = 0;
                 cursorRow++;
                 if (cursorRow >= height) {
-                    scrollUp();
+                    insertEmptyLine();
                 }
             }
 
         }
     }
 
-    public void scrollUp() {
-        Line top = screen.remove(0);
-        if (scrollback.size() >= scrollbackSize) {
-            scrollback.remove(0);
-        }
-        scrollback.add(top);
-        screen.add(new Line(width));
-        cursorRow = height - 1;
-    }
+
 
 
     public void insertText(String text) {
@@ -158,13 +152,16 @@ public class TerminalBuffer {
         }
     }
 
+//operations that do not depend on the cursor
+
     public void insertEmptyLine() {
-        Line line = screen.remove(0);
+        Line top = screen.remove(0);
         if (scrollback.size() >= scrollbackSize) {
             scrollback.remove(0);
         }
+        scrollback.add(top);
         screen.add(new Line(width));
-        cursorRow -= 1;
+        cursorRow = Math.max(0, cursorRow - 1);
     }
 
     public void clearScreen() {
@@ -181,4 +178,50 @@ public class TerminalBuffer {
         scrollback.clear();
 
     }
+
+    //content access
+
+    public char getCharAtScreen(int row, int column) {
+        return screen.get(row).getCell(column).getCharacter();
+    }
+
+
+    public char getCharAtScrollback(int row, int column) {
+        return scrollback.get(row).getCell(column).getCharacter();
+    }
+
+    public Cell getAttributeAtScreen(int row, int column) {
+        return screen.get(row).getCell(column);
+    }
+
+    public Cell getAttributeAtScrollback(int row, int column) {
+        return scrollback.get(row).getCell(column);
+    }
+
+    public String getLineToStringScreen(int row){
+        return screen.get(row).getLineValue();
+    }
+
+    public String getLineToStringScrollback(int row){
+        return scrollback.get(row).getLineValue();
+    }
+
+    public String getScreenToString(){
+        StringBuilder ret = new StringBuilder();
+        for(Line line : screen){
+            ret.append(line.getLineValue()).append("\n");
+        }
+
+        return ret.toString();
+    }
+
+    public String getScreenAndScrollbackToString(){
+        StringBuilder ret = new StringBuilder();
+        for(Line s : scrollback){
+            ret.append(s.getLineValue()).append("\n");
+        }
+        ret.append(getScreenToString());
+        return ret.toString();
+    }
+
 }
