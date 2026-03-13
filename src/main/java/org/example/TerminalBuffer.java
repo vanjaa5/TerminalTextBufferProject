@@ -26,8 +26,8 @@ public class TerminalBuffer {
         }
         this.cursorRow = 0;
         this.cursorColumn = 0;
-        foregroundColor = null;
-        backgroundColor = null;
+        foregroundColor = TerminalColor.WHITE;
+        backgroundColor = TerminalColor.BLACK;
         styles = 0;
 
     }
@@ -116,8 +116,6 @@ public class TerminalBuffer {
                     continue;
                 }
                 else cell.setWide(true);
-
-               // cursorColumn++;
                 Cell placeholder = line.getCell(cursorColumn++);
                 placeholder.setPlaceholder(true);
                 placeholder.setCharacter(' ');
