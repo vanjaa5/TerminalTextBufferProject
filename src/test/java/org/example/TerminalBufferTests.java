@@ -142,4 +142,13 @@ public class TerminalBufferTests {
         assertEquals(4,buffer.getCursorColumn());
     }
 
+    @Test
+    void wideCharacterLineFill(){
+        TerminalBuffer buffer = new TerminalBuffer(7, 3, 100);
+        buffer.fillLine(0,'你');
+        assertEquals("你你你",buffer.getLineToStringScreen(0).stripTrailing());
+        assertEquals(' ',buffer.getLineToStringScreen(0).charAt(3));
+
+    }
+
 }

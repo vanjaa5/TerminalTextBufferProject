@@ -169,7 +169,7 @@ public class TerminalBuffer {
     }
 
 
-    public void fillLine(int row, char c) {
+    public void fillLine(int row,char c) {
         Line line = screen.get(row);
         for (int i = 0; i < width; i++) {
             Cell cell = line.getCell(i);
@@ -177,6 +177,16 @@ public class TerminalBuffer {
             cell.setForegroundColor(foregroundColor);
             cell.setBackgroundColor(backgroundColor);
             cell.setStyles(styles);
+            if(Cell.isWideChar(c)){
+                if(i == width-1){
+                    cell.setCharacter(' ');
+                    continue;
+                }
+                cell.setWide(true);
+                Cell placeholder = line.getCell(++i);
+                placeholder.setPlaceholder(true);
+                placeholder.setCharacter(' ');
+            }
         }
     }
 
