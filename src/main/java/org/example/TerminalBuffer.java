@@ -136,7 +136,14 @@ public class TerminalBuffer {
     }
 
 
-
+    private void clearWideCharPair(Line line, int wideIndex) {
+        Cell wide = line.getCell(wideIndex);
+        wide.setCharacter(' ');
+        wide.setWide(false);
+        Cell ph = line.getCell(wideIndex + 1);
+        ph.setCharacter(' ');
+        ph.setPlaceholder(false);
+    }
 
     public void insertText(String text) {
         Line line = screen.get(cursorRow);
@@ -154,9 +161,18 @@ public class TerminalBuffer {
 
             }
 
+            if (line.getCell(k).isPlaceholder()) {
+                clearWideCharPair(line,k-1);
+            }
+            if(line.getCell(width-1).isPlaceholder()){
+                clearWideCharPair(line,width-2);
+            }
+
             for (int i = width - 1; i > k; i--) {
                 line.getCell(i).copyFrom(line.getCell(i - 1));
             }
+
+
             Cell cell = line.getCell(k++);
             cell.setCharacter(text.charAt(j));
             cell.setForegroundColor(foregroundColor);

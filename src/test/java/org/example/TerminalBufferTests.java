@@ -151,4 +151,38 @@ public class TerminalBufferTests {
 
     }
 
+    @Test
+    void clearScreenTest() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 3, 100);
+        buffer.writeText("hello");
+        buffer.clearScreen();
+        assertEquals("", buffer.getLineToStringScreen(0).stripTrailing());
+        assertEquals(0, buffer.getCursorRow());
+        assertEquals(0, buffer.getCursorColumn());
+    }
+
+    @Test
+    void clearScreenAndScrollbackTest() {
+        TerminalBuffer buffer = new TerminalBuffer(10, 3, 100);
+        buffer.writeText("aaaaaaaaaa");
+        buffer.writeText("bbbbbbbbbb");
+        buffer.writeText("cccccccccc");
+        buffer.writeText("dddddddddd");
+        buffer.clearScreenAndScrollback();
+        assertEquals(0, buffer.getScrollbackSize());
+        assertEquals("", buffer.getLineToStringScreen(0).stripTrailing());
+    }
+
+
+
+    @Test
+    void insertTextPushesWideCharOff() {
+        TerminalBuffer buffer = new TerminalBuffer(4, 3, 100);
+        buffer.writeText("a你b");
+        buffer.setCursorPosition(0, 0);
+        buffer.insertText("x");
+        assertEquals("xa你", buffer.getLineToStringScreen(0).stripTrailing());
+    }
+
+
 }

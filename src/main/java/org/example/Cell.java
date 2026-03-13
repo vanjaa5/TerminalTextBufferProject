@@ -96,6 +96,8 @@ public class Cell {
         backgroundColor = null;
         foregroundColor = null;
         character = ' ';
+        wide = false;
+        placeholder = false;
     }
 
     public void copyFrom(Cell cell) {
@@ -103,6 +105,8 @@ public class Cell {
         foregroundColor = cell.getForegroundColor();
         backgroundColor = cell.getBackgroundColor();
         styles = cell.getStyles();
+        wide = cell.wide;
+        placeholder = cell.placeholder;
     }
 
     public static boolean isWideChar(char c) {
@@ -121,5 +125,9 @@ public class Cell {
 
     public boolean isPlaceholder() {
         return placeholder;
+    }
+
+    public boolean isWide() {
+        return wide;
     }
 }
