@@ -126,6 +126,17 @@ public class TerminalBuffer {
         int n = text.length();
         int k = cursorColumn;
         for (int j = 0; j < n; j++) {
+
+            if(k >= width) {
+                cursorColumn = k = 0;
+                cursorRow++;
+                if (cursorRow >= height) {
+                    insertEmptyLine();
+                }
+                line = screen.get(cursorRow);
+
+            }
+
             for (int i = width - 1; i > k; i--) {
                 line.getCell(i).copyFrom(line.getCell(i - 1));
             }
