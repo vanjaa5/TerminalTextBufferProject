@@ -19,6 +19,7 @@ public class Line {
     public String getLineValue(){
         StringBuilder line = new StringBuilder();
         for (Cell cell : cells) {
+            if(cell.isPlaceholder()) continue;
             line.append(cell.getCharacter());
         }
 

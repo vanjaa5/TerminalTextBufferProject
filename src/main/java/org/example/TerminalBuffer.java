@@ -100,12 +100,31 @@ public class TerminalBuffer {
     public void writeText(String text) {
         for (char c : text.toCharArray()) {
             Line line = screen.get(cursorRow);
-            Cell cell = line.getCell(cursorColumn++);
+            Cell cell = line.getCell(cursorColumn);
 
             cell.setCharacter(c);
             cell.setForegroundColor(foregroundColor);
             cell.setBackgroundColor(backgroundColor);
             cell.setStyles(styles);
+
+            if(Cell.isWideChar(c)){
+                if(cursorColumn++ == width-1){
+                    cell.setCharacter(' ');
+                    cursorColumn = 0;
+                    cursorRow++;
+                    writeText(String.valueOf(c));
+                    continue;
+                }
+                else cell.setWide(true);
+
+               // cursorColumn++;
+                Cell placeholder = line.getCell(cursorColumn++);
+                placeholder.setPlaceholder(true);
+                placeholder.setCharacter(' ');
+
+            }
+            else cursorColumn++;
+
 
             if (cursorColumn >= width) {
                 cursorColumn = 0;

@@ -5,6 +5,8 @@ public class Cell {
     private TerminalColor foregroundColor;
     private TerminalColor backgroundColor;
     private int styles;
+    private boolean wide;
+    private boolean placeholder;
 
     public static final int BOLD = 1;
     public static final int ITALIC = 2;
@@ -15,6 +17,8 @@ public class Cell {
         foregroundColor = null;
         backgroundColor = null;
         styles = 0;
+        wide = false;
+        placeholder = false;
     }
 
     public char getCharacter() {
@@ -101,5 +105,21 @@ public class Cell {
         styles = cell.getStyles();
     }
 
+    public static boolean isWideChar(char c) {
+        return Character.getType(c) == Character.OTHER_LETTER
+                || (c >= 0x1100 && c <= 0x9FFF)  // CJK range
+                || (c >= 0xAC00 && c <= 0xD7A3); // Korean
+    }
 
+    public void setWide(boolean wide) {
+        this.wide = wide;
+    }
+
+    public void setPlaceholder(boolean placeholder) {
+        this.placeholder = placeholder;
+    }
+
+    public boolean isPlaceholder() {
+        return placeholder;
+    }
 }
